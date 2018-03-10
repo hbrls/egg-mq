@@ -1,0 +1,41 @@
+{
+  "name": "egg-mq",
+  "version": "0.0.1",
+  "description": "",
+  "eggPlugin": {
+    "name": "mq"
+  },
+  "keywords": [
+    "egg",
+    "egg-plugin",
+    "egg-mq",
+    "egg-rabbitmq",
+    "rabbitmq"
+  ],
+  "dependencies": {
+    "amqplib": "0.5.2"
+  },
+  "devDependencies": {
+    "egg": "2.2.1",
+    "egg-bin": "4.3.5",
+    "eslint": "3.19.0",
+    "eslint-config-airbnb": "14.1.0"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "start": "egg-bin dev"
+  },
+  "files": [
+    "app.js",
+    "agent.js",
+    "config"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hbrls/egg-mq.git"
+  },
+  "author": "hbrls<shuaizhexu@gmail.com>",
+  "license": "MIT"
+}
