@@ -1,1 +1,4 @@
-rabbitmq.address=121.43.50.120
+rabbitmq.username={username}
+rabbitmq.password={password}
+rabbitmq.address={address}
+rabbitmq.port={port}

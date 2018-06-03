@@ -4,33 +4,39 @@ const amqp = require('amqplib');
 module.exports = agent => {
   agent.messenger.on('egg-ready', async () => {
     const config = agent.config.mq;
-    console.log(config);
+    // console.log(config);
 
-    const conn = await amqp.connect(config.rabbitmq);
+    const conn = await amqp.connect(config.rabbitmq); // amqp.connect(endpoint, function (err, conn) { ... });
 
-    const channel = await conn.createChannel();
+    const { producers, consumers } = config;
 
-    await channel.assertExchange(config.exchange, config.exchangeType, { durable:true });
+    for (let i = 0; i < producers.length; i += 1) {
+      const channel = await conn.createChannel(); // conn.createChannel(function (err, channel) { ... });
 
-    const ok = await channel.assertQueue(config.queue, { exclusive: false });
+      const { exchange } = producers[i];
+      // console.log(exchange);
+      agent.messenger.on(exchange, ({ type, payload }) => {
+        // console.log(type, payload);
+        channel.publish(exchange, type, new Buffer(JSON.stringify(payload)));
+      });
+    }
 
-    await channel.bindQueue(ok.queue, config.exchange, 'top.*');
+    for (let i = 0; i < consumers.length; i += 1) {
+        const channel = await conn.createChannel(); // conn.createChannel(function (err, channel) { ... });
 
-    console.log('consume');
+        const { exchange, exchangeType, queue, topic, service } = consumers[i];
+        // console.log(exchange, exchangeType, queue, topic, service);
 
-    await channel.consume(ok.queue, (msg) => {
-      console.log(msg);
-      console.log(msg.content.toString());
+        await channel.assertExchange(exchange, exchangeType, { durable: true });
 
-      // agent.messenger.sendRandom('xxx_action', JSON.parse(msg.content.toString()))
+        const ok = await channel.assertQueue(queue, topic, { exclusive: false });
+        // console.log(ok);
 
-      // console.log(`[Key: ${msg.fields.routingKey}] ${msg.content.toString()}`);
+        await channel.bindQueue(queue, exchange, topic);
 
-      // channel.ack(msg);
-    });
+        await channel.consume(ok.queue, (msg) => {
+          agent.messenger.sendRandom(`@@egg-mg/queue`, { type: service, payload: msg.content.toString() });
+        });
+    }
   });
-
-  // agent.beforeStart(async () => {
-  //
-  // });
 };

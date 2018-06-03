@@ -2,4 +2,5 @@
 
 module.exports = app => {
   app.get('/', 'view.index');
+  app.get('/producer', 'view.producer');
 };

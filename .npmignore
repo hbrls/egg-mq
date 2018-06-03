@@ -1,0 +1,6 @@
+app/
+config/
+logs/
+node_modules/
+run/
+.eslintrc

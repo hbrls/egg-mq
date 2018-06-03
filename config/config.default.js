@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const envfile = fs.readFileSync(path.resolve(__dirname, './envfile'), 'utf-8').split('\n');
 
+
 module.exports = appInfo => {
   const config = {};
 
@@ -23,9 +24,21 @@ module.exports = appInfo => {
 
   config.mq = {
     rabbitmq: `amqp://${props['rabbitmq.username']}:${encodeURIComponent(props['rabbitmq.password'])}@${props['rabbitmq.address']}:${props['rabbitmq.port']}`,
-    exchange: 'someExchange',
-    exchangeType: 'fanout',
-    queue: 'someQueue',
+    producers: [
+      {
+        exchange: 'eggmqproducer.exchange.message',
+        exchangeType: 'topic',
+      },
+    ],
+    consumers: [
+      {
+        exchange: 'eggmqproducer.exchange.message',
+        exchangeType: 'topic',
+        queue: 'eggmqconsumer.queue.textMessage',
+        topic: 'text.*',
+        service: 'foo.bar',
+      },
+    ],
   };
 
   return config;

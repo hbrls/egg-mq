@@ -2,11 +2,11 @@
 
 const mock = require('egg-mock');
 
-describe('test/rabbitmq.test.js', () => {
+describe('test/mq.test.js', () => {
   let app;
   before(() => {
     app = mock.app({
-      baseDir: 'apps/rabbitmq-test',
+      baseDir: 'apps/mq-test',
     });
     return app.ready();
   });
@@ -17,7 +17,7 @@ describe('test/rabbitmq.test.js', () => {
   it('should GET /', () => {
     return app.httpRequest()
       .get('/')
-      .expect('hi, rabbitmq')
+      .expect('hi, mq')
       .expect(200);
   });
 });
