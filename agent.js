@@ -24,8 +24,8 @@ module.exports = agent => {
     for (let i = 0; i < consumers.length; i += 1) {
         const channel = await conn.createChannel(); // conn.createChannel(function (err, channel) { ... });
 
-        const { exchange, exchangeType, queue, topic, service } = consumers[i];
-        // console.log(exchange, exchangeType, queue, topic, service);
+        const { exchange, exchangeType, queue, topic, consumer } = consumers[i];
+        // console.log(exchange, exchangeType, queue, topic, consumer);
 
         await channel.assertExchange(exchange, exchangeType, { durable: true });
 
@@ -35,7 +35,12 @@ module.exports = agent => {
         await channel.bindQueue(queue, exchange, topic);
 
         await channel.consume(ok.queue, (msg) => {
-          agent.messenger.sendRandom(`@@egg-mg/queue`, { type: service, payload: msg.content.toString() });
+          // console.log(msg.fields.routingKey);
+          agent.messenger.sendRandom(`@@egg-mg/queue`, {
+            topic: msg.fields.routingKey,
+            consumer: consumer,
+            content: msg.content.toString(),
+          });
         });
     }
   });

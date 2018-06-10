@@ -36,7 +36,7 @@ module.exports = appInfo => {
         exchangeType: 'topic',
         queue: 'eggmqconsumer.queue.textMessage',
         topic: 'text.*',
-        service: 'foo.bar',
+        consumer: 'foo.bar',
       },
     ],
   };
