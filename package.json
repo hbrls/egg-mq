@@ -1,6 +1,6 @@
 {
   "name": "egg-mq",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "description": "",
   "eggPlugin": {
     "name": "mq"
@@ -29,8 +29,7 @@
   },
   "files": [
     "app.js",
-    "agent.js",
-    "config"
+    "agent.js"
   ],
   "repository": {
     "type": "git",

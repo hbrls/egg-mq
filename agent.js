@@ -41,6 +41,8 @@ module.exports = agent => {
             consumer: consumer,
             content: msg.content.toString(),
           });
+
+          channel.ack(msg);
         });
     }
   });

@@ -3,4 +3,5 @@ config/
 logs/
 node_modules/
 run/
+test/
 .eslintrc
