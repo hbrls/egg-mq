@@ -14,14 +14,14 @@ module.exports = agent => {
       const channel = await conn.createChannel(); // conn.createChannel(function (err, channel) { ... });
 
       const { exchange, exchangeType } = producers[i];
-      // console.log(exchange);
 
       await channel.assertExchange(exchange, exchangeType, { durable: true });
-      agent.logger.info(`[egg-mq producer] ${exchange}`);
+      agent.logger.info('[egg-mq producer register]', exchange);
 
       agent.messenger.on(exchange, ({ type, payload }) => {
-        // console.log(type, payload);
-        channel.publish(exchange, type, new Buffer(JSON.stringify(payload)));
+        const msg = JSON.stringify(payload);
+        agent.logger.info('[egg-mq producer out]', type, msg);
+        channel.publish(exchange, type, new Buffer(msg));
       });
     }
 
@@ -37,14 +37,16 @@ module.exports = agent => {
         // console.log(ok);
 
         await channel.bindQueue(queue, exchange, topic);
-        agent.logger.info(`[egg-mq consumer] ${exchange}, ${queue}`);
+        agent.logger.info('[egg-mq consumer register]', exchange, queue);
 
         await channel.consume(ok.queue, (msg) => {
-          // console.log(msg.fields.routingKey);
+          const { fields: { routingKey } } = msg;
+          const content = msg.content.toString();
+          agent.logger.info('[egg-mq consumer in]', routingKey, content);
           agent.messenger.sendRandom(`@@egg-mg/queue`, {
-            topic: msg.fields.routingKey,
+            topic: routingKey,
             consumer: consumer,
-            content: msg.content.toString(),
+            content: content,
           });
 
           channel.ack(msg);
