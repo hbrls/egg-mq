@@ -13,8 +13,12 @@ module.exports = agent => {
     for (let i = 0; i < producers.length; i += 1) {
       const channel = await conn.createChannel(); // conn.createChannel(function (err, channel) { ... });
 
-      const { exchange } = producers[i];
+      const { exchange, exchangeType } = producers[i];
       // console.log(exchange);
+
+      await channel.assertExchange(exchange, exchangeType, { durable: true });
+      agent.logger.info(`[egg-mq producer] ${exchange}`);
+
       agent.messenger.on(exchange, ({ type, payload }) => {
         // console.log(type, payload);
         channel.publish(exchange, type, new Buffer(JSON.stringify(payload)));
@@ -33,6 +37,7 @@ module.exports = agent => {
         // console.log(ok);
 
         await channel.bindQueue(queue, exchange, topic);
+        agent.logger.info(`[egg-mq consumer] ${exchange}, ${queue}`);
 
         await channel.consume(ok.queue, (msg) => {
           // console.log(msg.fields.routingKey);
