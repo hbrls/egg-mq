@@ -18,10 +18,10 @@ module.exports = agent => {
       await channel.assertExchange(exchange, exchangeType, { durable: true });
       agent.logger.info('[egg-mq producer register]', exchange);
 
-      agent.messenger.on(exchange, ({ type, payload }) => {
+      agent.messenger.on(`@@egg-mq/producer/${exchange}`, ({ topic, payload }) => {
         const msg = JSON.stringify(payload);
-        agent.logger.info('[egg-mq producer out]', type, msg);
-        channel.publish(exchange, type, new Buffer(msg));
+        agent.logger.info('[egg-mq producer out]', topic, msg);
+        channel.publish(exchange, topic, new Buffer(msg));
       });
     }
 
@@ -43,10 +43,10 @@ module.exports = agent => {
           const { fields: { routingKey } } = msg;
           const content = msg.content.toString();
           agent.logger.info('[egg-mq consumer in]', routingKey, content);
-          agent.messenger.sendRandom(`@@egg-mg/queue`, {
+          agent.messenger.sendRandom(`@@egg-mg/consumer`, {
             topic: routingKey,
             consumer: consumer,
-            content: content,
+            payload: JSON.parse(content),
           });
 
           channel.ack(msg);
