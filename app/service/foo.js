@@ -1,16 +1,8 @@
-module.exports = app => {
-  return class Foo extends app.Service {
-    async bar(topic, payload) {
-      console.log(topic, payload);
+const Service = require('egg').Service;
 
-      // const { ctx } = this;
-      // const { res } = await ctx.curl('https://httpbin.org/post', {
-      //   method: 'POST',
-      //   contentType: 'json',
-      //   data: payload,
-      //   dataType: 'json',
-      // });
-      // console.log(res);
-    }
-  };
+
+module.exports = class Foo extends Service {
+  async bar(topic, payload) {
+    this.ctx.logger.info(topic, payload);
+  }
 }

@@ -1,0 +1,17 @@
+{
+  "producers": [
+    {
+      "exchange": "eggmqproducer.exchange.message",
+      "exchangeType": "topic"
+    }
+  ],
+  "consumers": [
+    {
+      "exchange": "eggmqproducer.exchange.message",
+      "exchangeType": "topic",
+      "queue": "eggmqconsumer.queue.textMessage",
+      "topic": "text.*",
+      "consumer": "foo.bar"
+    }
+  ]
+}

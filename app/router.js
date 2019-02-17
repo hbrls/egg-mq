@@ -1,6 +1,8 @@
 'use strict';
 
 module.exports = app => {
-  app.get('/', 'view.index');
-  app.get('/producer', 'view.producer');
+  const { router, controller } = app;
+
+  router.get('/', controller.view.index);
+  router.get('/producer', controller.view.producer);
 };

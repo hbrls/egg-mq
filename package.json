@@ -1,7 +1,7 @@
 {
   "name": "egg-mq",
-  "version": "0.0.11",
-  "description": "",
+  "version": "0.1.0",
+  "description": "egg rabbitmq plugin",
   "eggPlugin": {
     "name": "mq"
   },
@@ -13,11 +13,11 @@
     "rabbitmq"
   ],
   "dependencies": {
-    "amqplib": "0.5.2"
+    "amqplib": "0.5.3"
   },
   "devDependencies": {
-    "egg": "2.2.1",
-    "egg-bin": "4.3.5",
+    "egg": "2.16.0",
+    "egg-bin": "4.9.0",
     "eslint": "3.19.0",
     "eslint-config-airbnb": "14.1.0"
   },
@@ -29,7 +29,8 @@
   },
   "files": [
     "app.js",
-    "agent.js"
+    "agent.js",
+    "app/service/mq.js"
   ],
   "repository": {
     "type": "git",

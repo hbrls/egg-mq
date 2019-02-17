@@ -2,9 +2,10 @@
 const fs = require('fs');
 const path = require('path');
 const envfile = fs.readFileSync(path.resolve(__dirname, './envfile'), 'utf-8').split('\n');
+const mq = require('./mq.json');
 
 
-module.exports = appInfo => {
+module.exports = app => {
   const config = {};
 
   config.keys = 'egg-mq-local-key';
@@ -23,22 +24,13 @@ module.exports = appInfo => {
   config.props = props;
 
   config.mq = {
-    rabbitmq: `amqp://${props['rabbitmq.username']}:${encodeURIComponent(props['rabbitmq.password'])}@${props['rabbitmq.address']}:${props['rabbitmq.port']}`,
-    producers: [
-      {
-        exchange: 'eggmqproducer.exchange.message',
-        exchangeType: 'topic',
-      },
-    ],
-    consumers: [
-      {
-        exchange: 'eggmqproducer.exchange.message',
-        exchangeType: 'topic',
-        queue: 'eggmqconsumer.queue.textMessage',
-        topic: 'text.*',
-        consumer: 'foo.bar',
-      },
-    ],
+    rabbitmq: {
+      address: props['rabbitmq.address'],
+      port: props['rabbitmq.port'],
+      username: props['rabbitmq.username'],
+      password: props['rabbitmq.password'],
+    },
+    ...mq,
   };
 
   return config;

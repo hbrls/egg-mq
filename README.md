@@ -21,15 +21,45 @@ exports.mq = {
 
 ```js
 // {app_root}/config/config.default.js
+const mq = require('./mq.json');
+
 exports.mq = {
+  rabbitmq: { address, port, username, password },
+  ...mq
 };
 ```
 
-see [config/config.default.js](config/config.default.js) for more detail.
+```json
+// {app_root}/config/mq.json
+{
+  "producers": [
+    {
+      "exchange": "eggmqproducer.exchange.message",
+      "exchangeType": "topic"
+    }
+  ],
+  "consumers": [
+    {
+      "exchange": "eggmqproducer.exchange.message",
+      "exchangeType": "topic",
+      "queue": "eggmqconsumer.queue.textMessage",
+      "topic": "text.*",
+      "consumer": "foo.bar"
+    }
+  ]
+}
+```
 
 ## Example
 
-<!-- example here -->
+```js
+// producer
+ctx.service.mq.producer('some.exchange', 'some.topic', payload);
+// ctx.service.consumer
+async consumer(topic, payload) {
+  ctx.logger.info(payload);
+}
+```
 
 ## Questions & Suggestions
 

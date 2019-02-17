@@ -1,30 +1,26 @@
-module.exports = app => {
-  class ViewController extends app.Controller {
-    async index() {
-      const { ctx } = this;
-      ctx.status = 200;
-      ctx.body = {
-        code: 0,
-        message: 'egg-mq ok',
-      };
-    }
+const Controller = require('egg').Controller;
 
-    async producer() {
-      const { ctx, app: { messenger } } = this;
 
-      const action = {
-        type: ctx.query.topic || 'text.a',
-        payload: { from: ctx.query.name || 'none' },
-      };
-      messenger.send('eggmqproducer.exchange.message', action);
-
-      ctx.status = 200;
-      ctx.body = {
-        code: 0,
-        message: 'egg-mq producer ok',
-      };
-    }
+module.exports = class ViewController extends Controller {
+  async index() {
+    const { ctx } = this;
+    ctx.status = 200;
+    ctx.body = {
+      code: 0,
+      message: 'egg-mq ok',
+    };
   }
 
-  return ViewController;
+  async producer() {
+    const { ctx } = this;
+    const topic = ctx.query.topic || 'text.a';
+    const payload = { from: ctx.query.name || 'none' };
+    this.service.mq.producer('eggmqproducer.exchange.message', topic, payload);
+
+    ctx.status = 201;
+    ctx.body = {
+      code: 0,
+      message: 'egg-mq producer ok',
+    };
+  }
 };

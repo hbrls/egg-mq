@@ -5,10 +5,11 @@ module.exports = agent => {
   agent.messenger.on('egg-ready', async () => {
     const config = agent.config.mq;
     // console.log(config);
+    const { rabbitmq, producers, consumers } = config;
 
-    const conn = await amqp.connect(config.rabbitmq); // amqp.connect(endpoint, function (err, conn) { ... });
-
-    const { producers, consumers } = config;
+    const { address, port, username, password } = rabbitmq;
+    const endpoint = `amqp://${username}:${encodeURIComponent(password)}@${address}:${port}`;
+    const conn = await amqp.connect(endpoint); // amqp.connect(endpoint, function (err, conn) { ... });
 
     for (let i = 0; i < producers.length; i += 1) {
       const channel = await conn.createChannel(); // conn.createChannel(function (err, channel) { ... });
